@@ -19,6 +19,5 @@
     "eslint": "^6.7.2",
     "nodemon": "^2.0.1"
   },
-  "dependencies": {
-  }
+  "dependencies": {}
 }
