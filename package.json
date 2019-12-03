@@ -3,21 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-  "scripts": {
-    "test": "jest --verbose --runInBand",
-    "test:watch": "npm run test -- --watch",
-    "start": "node server.js",
-    "start:watch": "nodemon server.js"
-  },
-  "jest": {
-    "testEnvironment": "node"
-  },
+  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "eslint": "^6.7.2",
-    "nodemon": "^2.0.1"
-  },
-  "dependencies": {}
+  "devDependencies": {},
+  "dependencies": {
+    "eslint": "^6.7.2"
+  }
 }
