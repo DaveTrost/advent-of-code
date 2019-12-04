@@ -1,5 +1,4 @@
 from datetime import datetime
-startTime = datetime.now()
 
 def testSequentialNess(n):
   stringN = str(n)
@@ -23,6 +22,7 @@ def testRepeating(n):
 #
 # main
 #
+startTime = datetime.now()
 
 # provided inputs
 start = 387638
@@ -36,3 +36,5 @@ for n in range(start, end + 1):
 
 print('solution:', len(potentials))
 print('compute time:', str(datetime.now() - startTime)[:-3])
+# solution: 292
+# compute time: 0:00:02.421
