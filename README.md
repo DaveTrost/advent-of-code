@@ -22,3 +22,16 @@
 - Part 2
   - When calculating intersection points, additionally calculate the distance the 2 wires have travelled to reach the intersection
   - The intersection point with the lowest distance of travel (for both wires) is chosen as the solution point
+
+## Day 4
+- Part 1
+  - Password code-breaking
+  - The objective is to find the number of passwords within a numeric range comprised of 6-digit sequences. The passwords must meet the following criteria:
+    * every digit in the sequence is greater than or equal to the preceeding digit
+    * two digits in the sequence repeat
+  - The implementation here is a straightforward loop. Time complexity is O(n)
+- Part 2
+  - The criteria are changed slightly:
+    * every digit in the sequence is greater than or equal to the preceeding digit
+    * there must be at least one group of **exactly** two repeating digits
+  - implementation remains a straightforward loop. Time complexity remains at O(n)
