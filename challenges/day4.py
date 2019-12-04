@@ -2,19 +2,21 @@ from datetime import datetime
 startTime = datetime.now()
 
 def testSequentialNess(n):
+  stringN = str(n)
   for i in range(1, 6):
-    prev = int(str(n)[i - 1])
-    current = int(str(n)[i])
+    prev = int(stringN[i - 1])
+    current = int(stringN[i])
     if prev > current: return False
   return True
 
 def testRepeating(n):
+  stringN = str(n)
   for i in range(1, 6):
-    prev = int(str(n)[i - 1])
-    current = int(str(n)[i])
+    prev = int(stringN[i - 1])
+    current = int(stringN[i])
     if current == prev:
-      if i >= 2 and int(str(n)[i - 2]) == prev: continue
-      if i <= 4 and int(str(n)[i + 1]) == current: continue
+      if i >= 2 and int(stringN[i - 2]) == prev: continue
+      if i <= 4 and int(stringN[i + 1]) == current: continue
       return True
   return False
 
