@@ -62,3 +62,14 @@
       * 08: equal to - takes 3 parameters. If parameter 1 == parameter 2, store `1` in the position of parameter 3, else store `0` there
   - The provided input will no longer output diagnostic codes. Instead, the single output will be the expected answer - ostensibly needed to repair the thermal radiators of the space shuttle's air conditioning system(?)
   - The instructions say to provide `5` as the value to the first input-type opcode
+
+## Day 6
+- Part 1
+  - The orbits table is descriptive of a tree-like structure. The COM (center of mass) is the root of the tree. Moving outward from the COM, each object in orbit can be traced back to the COM. The mass that an object orbits around is its parent node. Parent nodees may have any number of chilren nodes (objects in orbit around them). 
+  - So, this is a K-ary tree probem. The challenge is asking for the sum of the depths of all nodes in the tree. 
+  - After constructing the tree, a tree-traversal method is used to visit each node and record its depth
+  - The final answer is the sum of these depths across the tree (which I implemented as a dictionary)
+- Part 2
+  - By converting the orbits table to a graph-like structure, the distance between Santa ("SAN") and our location ("YOU") can be calculated
+  - After constructing the graph, Santa is used as the root node for depth calculation.
+  - Our depth under this condition is equivalent to our distance from Santa.
