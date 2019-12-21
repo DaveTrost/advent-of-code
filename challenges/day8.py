@@ -27,8 +27,8 @@ image = [-1 for i in range(WIDTH * HEIGHT)]
 for layer in layers:
   for i in range(len(layer)):
     if image[i] == -1:
-      if layer[i] == 0: image[i] = ' '
-      if layer[i] == 1: image[i] = 'X'
+      if layer[i] == 0: image[i] = '   '
+      if layer[i] == 1: image[i] = ' 0 '
 
 printStr = ''
 for i in range(HEIGHT):
