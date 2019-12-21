@@ -1,0 +1,32 @@
+# portal names and their single character translations
+
+- AA: B
+- ZZ: E
+
+- DY: a 
+- YK: b
+- CJ: c
+- WS: d
+- KK: e
+- DF: f
+- WE: g
+- BY: h
+- XD: i
+- RR: j
+- DB: k
+- ZS: l
+- ZM: m
+- HJ: n
+- TV: o
+- LN: p
+- KI: q
+- GF: r
+- RJ: s
+- IT: u
+- FI: v
+- PC: w
+- BE: x
+- SE: y 
+- UW: z
+- LX: 1
+- IN: 2
