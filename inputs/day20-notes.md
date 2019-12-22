@@ -22,11 +22,11 @@
 - KI: q
 - GF: r
 - RJ: s
+- LX: t
 - IT: u
 - FI: v
 - PC: w
 - BE: x
 - SE: y 
 - UW: z
-- LX: 1
 - IN: 2
