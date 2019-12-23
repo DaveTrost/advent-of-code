@@ -62,6 +62,27 @@ def readInputs(adjListDict, portalsDict):
       row += 1
   return [begin, end, maxCol, maxRow]
 
+def isPortalOnOutsideEdge(pos, w, h):
+  [x, y] = pos.split('c')[1].split('r')
+  if x == '1' or y == '1': return True
+  if x == str(w): return True
+  if y == str(h): return True
+
+def connectMazeNodesAndPortals(adjListDict, portalsDict):
+  for key in adjListDict: 
+    (_, x, y) = adjListDict[key].getInfo()
+    for (dx, dy) in CARDINAL_DIRS:
+      nextPosition = position(x + dx, y + dy)
+      if nextPosition in adjListDict:
+        adjListDict[key].setExit(nextPosition, 0)
+  for c in portalsDict:
+    [pos1, pos2] = portalsDict[c]
+    levelChangeFromPos1ToPos2 = 1
+    if isPortalOnOutsideEdge(pos1, inputWidth, inputHeight):
+      levelChangeFromPos1ToPos2 = -1
+    adjListDict[pos1].setExit(pos2, levelChangeFromPos1ToPos2)
+    adjListDict[pos2].setExit(pos1, -levelChangeFromPos1ToPos2)
+
 def findDistancesFromStart(adjListDict, begin, end):
   queue = []
   startLevel = 0
@@ -91,27 +112,6 @@ def findDistancesFromStart(adjListDict, begin, end):
         queue.append([nextPos, dist + 1, nextLevel])
         if DEBUG_MODE and levelChange == 1: print(name, '-->', nextPos, nextLevel, dist + 1)
         if DEBUG_MODE and levelChange == -1: print(name, ' ^^^^ ', nextPos, nextLevel, dist + 1)
-
-def isPortalOnOutsideEdge(pos, w, h):
-  [x, y] = pos.split('c')[1].split('r')
-  if x == '1' or y == '1': return True
-  if x == str(w): return True
-  if y == str(h): return True
-
-def connectMazeNodesAndPortals(adjListDict, portalsDict):
-  for key in adjListDict: 
-    (_, x, y) = adjListDict[key].getInfo()
-    for (dx, dy) in CARDINAL_DIRS:
-      nextPosition = position(x + dx, y + dy)
-      if nextPosition in adjListDict:
-        adjListDict[key].setExit(nextPosition, 0)
-  for c in portalsDict:
-    [pos1, pos2] = portalsDict[c]
-    levelChangeFromPos1ToPos2 = 1
-    if isPortalOnOutsideEdge(pos1, inputWidth, inputHeight):
-      levelChangeFromPos1ToPos2 = -1
-    adjListDict[pos1].setExit(pos2, levelChangeFromPos1ToPos2)
-    adjListDict[pos2].setExit(pos1, -levelChangeFromPos1ToPos2)
 
 #
 # main
