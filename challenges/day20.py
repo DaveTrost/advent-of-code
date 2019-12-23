@@ -1,6 +1,7 @@
 from datetime import datetime
 
 CARDINAL_DIRS = [[0, -1], [0, 1], [-1, 0], [1, 0]]
+DEBUG_MODE = False
 
 def position(x, y): return 'c' + str(x) + 'r' + str(y)
 
@@ -68,7 +69,7 @@ def findDistancesFromStart(adjListDict, begin, end):
   queue.append([begin, startDistance, startLevel])
   
   while queue:
-    # pop the best case node from the queue and mark it as visited
+    # pop the next node from the queue (breadth first approach) and mark it visited
     (name, dist, level) = queue.pop(0)
     node = adjListDict[name]
     node.setDistance(dist, level)
@@ -76,31 +77,41 @@ def findDistancesFromStart(adjListDict, begin, end):
     # check the end condition
     if name == end and level == 0: return
 
-    # add each neighboring node to the queue
     for [nextPos, levelChange] in node.getExits():
-      nextLevel = level + levelChange
 
-      # The end node is considered inaccessible except from level 0
+      # check invalid queueing conditions
       if nextPos == end and level > 0: continue
-
-      # There can be no negatively numbered levels (these would be "above" level 0)
+      nextLevel = level + levelChange
       if nextLevel < 0: continue
 
-      # consider the next node, its level, and its distance.  
+      # add the neighboring node, its level and its distance to the queue  
       nextNode = adjListDict[nextPos]
       visits = nextNode.getVisits()
       if (not nextLevel in visits) or (not visits[nextLevel]):
         queue.append([nextPos, dist + 1, nextLevel])
-
-        # some debug print statements
-        if levelChange == 1: print(name, '-->', nextPos, nextLevel, dist + 1)
-        if levelChange == -1: print(name, ' ^^^^ ', nextPos, nextLevel, dist + 1)
+        if DEBUG_MODE and levelChange == 1: print(name, '-->', nextPos, nextLevel, dist + 1)
+        if DEBUG_MODE and levelChange == -1: print(name, ' ^^^^ ', nextPos, nextLevel, dist + 1)
 
 def isPortalOnOutsideEdge(pos, w, h):
   [x, y] = pos.split('c')[1].split('r')
   if x == '1' or y == '1': return True
   if x == str(w): return True
   if y == str(h): return True
+
+def connectMazeNodesAndPortals(adjListDict, portalsDict):
+  for key in adjListDict: 
+    (pos, x, y) = adjListDict[key].getInfo()
+    for (dx, dy) in CARDINAL_DIRS:
+      nextPosition = position(x + dx, y + dy)
+      if nextPosition in adjListDict:
+        adjListDict[key].setExit(nextPosition, 0)
+  for c in portalsDict:
+    [pos1, pos2] = portalsDict[c]
+    levelChangeFromPos1ToPos2 = 1
+    if isPortalOnOutsideEdge(pos1, inputWidth, inputHeight):
+      levelChangeFromPos1ToPos2 = -1
+    adjListDict[pos1].setExit(pos2, levelChangeFromPos1ToPos2)
+    adjListDict[pos2].setExit(pos1, -levelChangeFromPos1ToPos2)
 
 #
 # main
@@ -112,31 +123,11 @@ adjListDict = {}
 portalsDict = {}
 [begin, end, inputWidth, inputHeight] = readInputs(adjListDict, portalsDict)
 
-for key in adjListDict: 
-  (pos, x, y) = adjListDict[key].getInfo()
-  for (dx, dy) in CARDINAL_DIRS:
-    nextPosition = position(x + dx, y + dy)
-    if nextPosition in adjListDict:
-      adjListDict[key].setExit(nextPosition, 0)
-
-for c in portalsDict:
-  [pos1, pos2] = portalsDict[c]
-  levelChangeFromPos1ToPos2 = 1
-  if isPortalOnOutsideEdge(pos1, inputWidth, inputHeight):
-    levelChangeFromPos1ToPos2 = -1
-  adjListDict[pos1].setExit(pos2, levelChangeFromPos1ToPos2)
-  adjListDict[pos2].setExit(pos1, -levelChangeFromPos1ToPos2)
-
-# print(inputWidth, inputHeight)
-# print(portalsDict)
-# for n in adjListDict: 
-#   for [name, dL] in adjListDict[n].getExits():
-#     if not dL == 0: print(n, 'to', name, dL)
-# exit()
+connectMazeNodesAndPortals(adjListDict, portalsDict)
 
 findDistancesFromStart(adjListDict, begin, end)
 
 print('# solution:', adjListDict[end].getDistances()[0])
 print('# compute time:', str(datetime.now() - startTime)[:-3])
-# solution: 620
-# compute time: 0:00:00.116
+# solution: 7366
+# compute time: 0:00:16.654
