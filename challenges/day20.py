@@ -10,23 +10,24 @@ class MazeNode(object):
     self.y = y
     self.name = position(x, y)
     self.exits = []
-    self.visited = False
-    self.distance = -1
+    self.visitsByLevel = {}
+    self.distancesByLevel = {}
   def getInfo(self):
     return [self.name, self.x, self.y]
-  def getVisited(self):
-    return self.visited
+  def getVisits(self):
+    return self.visitsByLevel
   def getExits(self):
     return self.exits
-  def getDistance(self):
-    return self.distance
   def setExit(self, name, levelChange):
     self.exits.append([name, levelChange])
-  def setDistance(self, d):
-    self.visited = True
-    self.distance = d
-  def print(self):
-    print('d=' + str(self.distance).zfill(3) + ' ... ' + self.name)
+  def getDistances(self):
+    return self.distancesByLevel
+  def setDistance(self, d, level):
+    self.visitsByLevel[level] = True
+    self.distancesByLevel[level] = d
+  def printDistances(self):
+    for d in self.distancesByLevel:
+      print('d=' + str(self.distancesByLevel[d]).zfill(3) + ' ... ' + self.name)
 
 def readInputs(adjListDict, portalsDict):
   with open('./inputs/day20.txt', 'r') as f:
@@ -58,33 +59,48 @@ def readInputs(adjListDict, portalsDict):
       if not len(charList): break
       maxRow = max(maxRow, row)
       row += 1
-
   return [begin, end, maxCol, maxRow]
 
-def findDistancesFromStart(adjListDict, begin):
+def findDistancesFromStart(adjListDict, begin, end):
   queue = []
-  distance = 0
-  level = 0
-
-  adjListDict[begin].setDistance(distance)
-  queue.append([begin, distance]) 
+  startLevel = 0
+  startDistance = 0
+  queue.append([begin, startDistance, startLevel])
   
   while queue:
-    (name, dist) = queue.pop(0)
+    # pop the best case node from the queue and mark it as visited
+    (name, dist, level) = queue.pop(0)
     node = adjListDict[name]
+    node.setDistance(dist, level)
 
-    for [nextPos, levelChange] in node.getExits(): 
+    # check the end condition
+    if name == end and level == 0: return
+
+    # add each neighboring node to the queue
+    for [nextPos, levelChange] in node.getExits():
+      nextLevel = level + levelChange
+
+      # The end node is considered inaccessible except from level 0
+      if nextPos == end and level > 0: continue
+
+      # There can be no negatively numbered levels (these would be "above" level 0)
+      if nextLevel < 0: continue
+
+      # consider the next node, its level, and its distance.  
       nextNode = adjListDict[nextPos]
-      level += levelChange
-      if nextNode.getVisited() == False:
-        nextNode.setDistance(dist + 1)
-        queue.append([nextPos, dist + 1])
+      visits = nextNode.getVisits()
+      if (not nextLevel in visits) or (not visits[nextLevel]):
+        queue.append([nextPos, dist + 1, nextLevel])
+
+        # some debug print statements
+        if levelChange == 1: print(name, '-->', nextPos, nextLevel, dist + 1)
+        if levelChange == -1: print(name, ' ^^^^ ', nextPos, nextLevel, dist + 1)
 
 def isPortalOnOutsideEdge(pos, w, h):
-  if 'c1' in pos: return True
-  if 'r1' in pos: return True
-  if 'c' + str(w) in pos: return True
-  if 'r' + str(h) in pos: return True
+  [x, y] = pos.split('c')[1].split('r')
+  if x == '1' or y == '1': return True
+  if x == str(w): return True
+  if y == str(h): return True
 
 #
 # main
@@ -104,19 +120,23 @@ for key in adjListDict:
       adjListDict[key].setExit(nextPosition, 0)
 
 for c in portalsDict:
-  (pos1, pos2) = portalsDict[c]
+  [pos1, pos2] = portalsDict[c]
   levelChangeFromPos1ToPos2 = 1
   if isPortalOnOutsideEdge(pos1, inputWidth, inputHeight):
     levelChangeFromPos1ToPos2 = -1
   adjListDict[pos1].setExit(pos2, levelChangeFromPos1ToPos2)
   adjListDict[pos2].setExit(pos1, -levelChangeFromPos1ToPos2)
 
-findDistancesFromStart(adjListDict, begin)
+# print(inputWidth, inputHeight)
+# print(portalsDict)
+# for n in adjListDict: 
+#   for [name, dL] in adjListDict[n].getExits():
+#     if not dL == 0: print(n, 'to', name, dL)
+# exit()
 
-# for n in adjListDict: adjListDict[n].print()
-# print('begin:', begin, 'end:', end)
+findDistancesFromStart(adjListDict, begin, end)
 
-print('# solution:', adjListDict[end].getDistance())
+print('# solution:', adjListDict[end].getDistances()[0])
 print('# compute time:', str(datetime.now() - startTime)[:-3])
 # solution: 620
 # compute time: 0:00:00.116
