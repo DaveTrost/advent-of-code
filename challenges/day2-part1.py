@@ -1,4 +1,3 @@
-import math as math
 with open('./inputs/day2.txt', 'r') as f:
   inputs = f.readline().split(',')
 

@@ -3,7 +3,6 @@
 ## Day 1
 - Part 1
   - Calculate the fuel requirements for all modules. Each module has a fuel requirement of its mass divided by three, rounded down, and subtract 2.
-  - module masses provided in day1.txt
 - Part 2
   - Each fuel requirement adds its own mass to the equation. Use recursion to calculate the fuel requirement of each fuel requirement, stopping when a zero or negative fuel requirement is encountered.
 
@@ -35,3 +34,42 @@
     * every digit in the sequence is greater than or equal to the preceeding digit
     * there must be at least one group of **exactly** two repeating digits
   - implementation remains a straightforward loop. Time complexity remains at O(n)
+
+## Day 5
+- Part 1
+  - New Intcode definition:
+    * 1st parameter: opcode
+      * 01: add - takes 3 parameters
+      * 02: multiply - takes 3 parameters
+      * 03: save to location - takes 1 parameter
+      * 04: read from location (aka: output) - takes 1 parameter
+    * 2nd parameter: a location or a value
+    * 3rd parameter (optional): a location or a value
+    * 4th parameter (optional): location for the solution
+  - NOTE: because some instructions need only 1 parameter, instruction size is no longer constant.
+  - The opcode itself is extended to be up to 5 digits, described as ABCDE, where: 
+    * A - mode of 3rd parameter: 1 = use as value, 0 = use as location (should always be zero, I think?)
+    * B - mode of 2nd parameter: 1 = use as value, 0 = use as location
+    * C - mode of 1st parameter: 1 = use as value, 0 = use as location
+    * DE - two-digit opcode
+  - The provided input is a program that uses the new instruction set and outputs diagnostic codes (using the output opcode). If the Intcode computer is programmed properly, each diagnostic output should report zero. Except for the final diagnostic output - this diagnostic output is the expected answer - ostensibly needed to repair the space shuttle's air conditioning system(?)
+  - The instructions say to provide `1` as the value to the first input-type opcode
+- Part 2
+  - New Intcode op definitions:
+      * 05: jump-if-true - takes 2 parameters. If parameter 1 is non-zero, set the instruction pointer to parameter 2's value
+      * 06: jump-if-false - takes 2 parameters. If parameter 1 is zero, set the instruction pointer to parameter 2's value
+      * 07: less than - takes 3 parameters. If parameter 1 < parameter 2, store `1` in the position of parameter 3, else store `0` there
+      * 08: equal to - takes 3 parameters. If parameter 1 == parameter 2, store `1` in the position of parameter 3, else store `0` there
+  - The provided input will no longer output diagnostic codes. Instead, the single output will be the expected answer - ostensibly needed to repair the thermal radiators of the space shuttle's air conditioning system(?)
+  - The instructions say to provide `5` as the value to the first input-type opcode
+
+## Day 6
+- Part 1
+  - The orbits table is descriptive of a tree-like structure. The COM (center of mass) is the root of the tree. Moving outward from the COM, each object in orbit can be traced back to the COM. The mass that an object orbits around is its parent node. Parent nodees may have any number of chilren nodes (objects in orbit around them). 
+  - So, this is a K-ary tree probem. The challenge is asking for the sum of the depths of all nodes in the tree. 
+  - After constructing the tree, a tree-traversal method is used to visit each node and record its depth
+  - The final answer is the sum of these depths across the tree (which I implemented as a dictionary)
+- Part 2
+  - By converting the orbits table to a graph-like structure, the distance between Santa ("SAN") and our location ("YOU") can be calculated
+  - After constructing the graph, Santa is used as the root node for depth calculation.
+  - Our depth under this condition is equivalent to our distance from Santa.
