@@ -100,7 +100,7 @@ def isPortalOnOutsideEdge(pos, w, h):
 
 def connectMazeNodesAndPortals(adjListDict, portalsDict):
   for key in adjListDict: 
-    (pos, x, y) = adjListDict[key].getInfo()
+    (_, x, y) = adjListDict[key].getInfo()
     for (dx, dy) in CARDINAL_DIRS:
       nextPosition = position(x + dx, y + dy)
       if nextPosition in adjListDict:
@@ -130,4 +130,4 @@ findDistancesFromStart(adjListDict, begin, end)
 print('# solution:', adjListDict[end].getDistances()[0])
 print('# compute time:', str(datetime.now() - startTime)[:-3])
 # solution: 7366
-# compute time: 0:00:16.654
+# compute time: 0:00:15.957
